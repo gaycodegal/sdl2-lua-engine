@@ -18,7 +18,7 @@ int start(){
   }
   Uint32 initopts = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
   
-  window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, initopts );
+  window = SDL_CreateWindow( "SDL Tutorial", 0, 0, /*SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED*/ SCREEN_WIDTH, SCREEN_HEIGHT, initopts );
   if( window == NULL ){
     printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
     return 1;
@@ -64,7 +64,7 @@ int main( int argc, char* args[] ){
 
   lua_getglobal(L, "loadScene");  /* function to be called */
   if (lua_pcall(L, 0, 0, 0) != 0)
-    printf("we fucked up\n");
+    printf("we fucked up %s\n", lua_tostring(L, -1));
   
   SDL_RenderPresent( globalRenderer );
 

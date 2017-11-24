@@ -25,19 +25,24 @@ end
 ]]
 
 function loadScene()
-   t = Game.Texture("turtle.png")
+   t = Game.Texture.new("turtle.png")
    s = {}
    for i = 1,10 do
-      s[i] = Game.Sprite(t, i * 20, 100 + i * 10, 128, 128)
-      Game.Draw(s[i])
+      s[i] = Game.Sprite.new(t, i * 20, 100 + i * 10, 128, 128)
+      print(getmetatable(s[i]))
+      for k, v in pairs(getmetatable(s[i])) do
+	 print(k, v)
+      end
+      print(s[i])
+      print(getmetatable(s[i])["draw"](s[i]))
+      print("?")
+      s[i].draw()
+      --Game.Draw(s[i])
    end
 end
 
 function endScene()
-   for i, sprite in pairs(s) do
-      Game.DestroySprite(sprite)
-   end
-   Game.DestroyTexture(t)
+   t.destroy()
 end
 
 --[[loadScene()
