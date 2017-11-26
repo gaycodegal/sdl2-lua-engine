@@ -1,5 +1,5 @@
 #include "main.hpp"
-
+#define SDL_ACTIVE
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 SDL_Window* window;
@@ -40,10 +40,12 @@ int end(){
 
 int main( int argc, char* args[] ){
   lua_State *L;
+  #ifdef SDL_ACTIVE
   if(start() != 0){
     end();
     return 1;
   }
+  #endif
   L = luaL_newstate();
   luaL_openlibs(L);
   luaL_requiref(L, "Game", luaopen_sprites, 1);
@@ -51,7 +53,9 @@ int main( int argc, char* args[] ){
   //screenSurface = SDL_GetWindowSurface( window );
   
   //SDL_FillRect( screenSurface, NULL, SDL_MapRGB( screenSurface->format, 0xFF, 0xFF, 0xFF ) );
+  #ifdef SDL_ACTIVE
   SDL_RenderClear( globalRenderer );
+  #endif
   if(luaL_loadfile(L, "load.lua")){
     printf("load fuck 2\n");
     return 1;
@@ -65,17 +69,18 @@ int main( int argc, char* args[] ){
   lua_getglobal(L, "loadScene");  /* function to be called */
   if (lua_pcall(L, 0, 0, 0) != 0)
     printf("we fucked up %s\n", lua_tostring(L, -1));
-  
+#ifdef SDL_ACTIVE
   SDL_RenderPresent( globalRenderer );
-
   //Wait two seconds
   SDL_Delay( 2000 );
+#endif
   lua_getglobal(L, "endScene");  /* function to be called */
   if (lua_pcall(L, 0, 0, 0) != 0){
     printf("we fucked up %s\n", lua_tostring(L, -1));
   }
   lua_close(L);
-
+#ifdef SDL_ACTIVE
   end();
+  #endif
   return 0;
 }

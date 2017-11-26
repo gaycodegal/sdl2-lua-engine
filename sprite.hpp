@@ -16,7 +16,6 @@ private:
   SDL_Rect source;
   SDL_Texture* texture;
 public:
-  void asgard();
   void init(SDL_Texture *tex, int x, int y, int w, int h);
   void draw();
 };

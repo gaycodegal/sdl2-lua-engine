@@ -19,20 +19,47 @@ static int l_free_texture(lua_State *L){
   return 0;
 }
 
+void printLuaStack(lua_State *L, const char *name){
+  int args = lua_gettop(L);
+  size_t s;
+  printf("top at(%s): %i\n", name, args);
+  for(int i = 0; i < args; ++i){
+    printf("arg %i %s\n", i, luaL_tolstring(L, -args + i, &s));
+    lua_pop(L, 1);
+  }
+}
+
+static int l_meta_indexer(lua_State *L){
+  //printLuaStack(L, "meta_index");
+  lua_getmetatable(L, -2);
+  //table
+  //str
+  //meta
+  lua_replace(L, -3);
+  //meta
+  //str
+  lua_gettable(L, -2);
+  //meta
+  //val
+  lua_replace(L, -2);
+  //val
+  return 1;
+}
+
 static int l_draw_sprite(lua_State *L){
   Sprite *s;
   if (!lua_isuserdata(L, -1)){
     lua_pop(L, 1);
     return 0;
   }
-  s = (Sprite *)lua_touserdata(L, -1);
+  s = *(Sprite **)lua_touserdata(L, -1);
   lua_pop(L, 1);
   s->draw();
-  printf("drawn\n");
   return 0;
 }
 
 static int l_new_texture(lua_State *L){
+  //printLuaStack(L, "new_tex");
   char * path;
   if (!lua_isstring(L, -1)){
     lua_pop(L, 1);
@@ -46,6 +73,7 @@ static int l_new_texture(lua_State *L){
 }
 
 static int l_new_sprite(lua_State *L){
+  //printLuaStack(L, "new_sprite");
   int x, y, w, h;
   SDL_Texture *tex;
   Sprite *s;
@@ -82,27 +110,24 @@ static int l_new_sprite(lua_State *L){
     lua_pushnil(L);
     return 1;
   }
-  printf("x %i, y %i, w %i, h %i\n", x,y,w,h);
+  //  printf("x %i, y %i, w %i, h %i\n", x,y,w,h);
   tex = (SDL_Texture *)lua_touserdata(L, -1);
-  lua_pop(L, 1);  
-  size_t bytes = sizeof(Sprite);
-  s = reinterpret_cast<Sprite *>(lua_newuserdata(L, bytes));
+  lua_pop(L, 1);
+  s = new Sprite();
+  *reinterpret_cast<Sprite **>(lua_newuserdata(L, sizeof(Sprite*))) = s;
   s->init(tex, x, y, w, h);
-  printf("sptr %p\n", tex);
-  char *c = (char *)s;
-  for(int l = 0; l < sizeof(Sprite); l++){
-    printf("c: %i/%i v: %i\n", l, sizeof(Sprite), *(c++));
-  }
+  /*for(int l = 0; l < sizeof(Sprite); l++){
+    printf("c: %i/%ld v: %i\n", l, sizeof(Sprite), *(c++));
+    }*/
   s->draw();
-  printf("asdf\n");
   set_meta(L, -1, "Sprite");
-  printf("cre\n");
   return 1;
 }
 
 static const struct luaL_Reg spritemeta [] = {
   {"new", l_new_sprite},
   {"draw", l_draw_sprite},
+  {"__index", l_meta_indexer},
   {NULL, NULL}
 };
 

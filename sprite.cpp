@@ -37,14 +37,8 @@ void Sprite::init(SDL_Texture *tex, int x, int y, int w, int h){
   this->source.y = 0;
   this->source.w = w;
   this->source.h = h;
-  printf("hi???\n");
-}
-
-void Sprite::asgard(){
-  printf("hi\n");
 }
 
 void Sprite::draw(){
-  printf("attemp asdf\n");
-  //SDL_RenderCopy( globalRenderer, texture, &source, &dest );
+  SDL_RenderCopy( globalRenderer, texture, &source, &dest );
 }
