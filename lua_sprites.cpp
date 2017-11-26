@@ -119,7 +119,7 @@ static int l_new_sprite(lua_State *L){
   /*for(int l = 0; l < sizeof(Sprite); l++){
     printf("c: %i/%ld v: %i\n", l, sizeof(Sprite), *(c++));
     }*/
-  s->draw();
+  //s->draw();
   set_meta(L, -1, "Sprite");
   return 1;
 }

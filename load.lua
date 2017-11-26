@@ -38,7 +38,7 @@ function loadScene()
    s = {}
    for i = 1,10 do
       s[i] = Game.Sprite.new(t, i * 20, 100 + i * 10, 128, 128)
-      s[i].draw()
+      s[i]:draw()
       --Game.Draw(s[i])
    end
 end
