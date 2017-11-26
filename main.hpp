@@ -13,6 +13,11 @@ extern "C" {
 #include "sprite.hpp"
 #include "lua_sprites.hpp"
 
+struct luaClassList {
+  const char * name;
+  const struct luaL_Reg * meta;
+};
+
 //Screen dimension constants
 extern const int SCREEN_WIDTH;
 extern const int SCREEN_HEIGHT;

@@ -24,21 +24,29 @@ function Game.DestroyTexture(t)
 end
 ]]
 
+function hi(a, b)
+   print("yehaw",a,b)
+   return getmetatable(a)[b]   
+end
+
+function usertostring(x)
+   return "userdata"
+end
+
 function loadScene()
-   t = Game.Texture("turtle.png")
+   t = Game.Texture.new("turtle.png")
    s = {}
    for i = 1,10 do
-      s[i] = Game.Sprite(t, i * 20, 100 + i * 10, 128, 128)
-      Game.Draw(s[i])
+      s[i] = Game.Sprite.new(t, i * 20, 100 + i * 10, 128, 128)
+      s[i].draw()
+      --Game.Draw(s[i])
    end
 end
 
 function endScene()
-   for i, sprite in pairs(s) do
-      Game.DestroySprite(sprite)
-   end
-   Game.DestroyTexture(t)
+   Game.Texture.destroy(t)
 end
 
 --[[loadScene()
    endScene()]]
+

@@ -26,7 +26,7 @@ SDL_Texture* loadTexture( const char *path )
   return newTexture;
 }
 
-Sprite::Sprite(SDL_Texture *tex, int x, int y, int w, int h){
+void Sprite::init(SDL_Texture *tex, int x, int y, int w, int h){
   texture = tex;
   this->dest.x = x;
   this->dest.y = y;
@@ -40,6 +40,5 @@ Sprite::Sprite(SDL_Texture *tex, int x, int y, int w, int h){
 }
 
 void Sprite::draw(){
-  printf("asdf\n");
   SDL_RenderCopy( globalRenderer, texture, &source, &dest );
 }
