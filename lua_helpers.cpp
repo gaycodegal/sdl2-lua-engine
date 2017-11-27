@@ -39,3 +39,24 @@ void callLuaVoid(lua_State *L, const char *name){
   if (lua_pcall(L, 0, 0, 0) != 0)
     printf("we fucked up calling:%s error:%s\n", name, lua_tostring(L, -1));
 }
+
+int globalTypeExists(lua_State *L, int type, const char *name){
+  int toptype;
+  lua_getglobal(L, name);
+  toptype = lua_type(L, -1);
+  lua_pop(L, 1);
+  return toptype == type;
+}
+
+int loadLuaFile(lua_State *L, const char *fname){
+  if(luaL_loadfile(L, fname)){
+    printf("failed to load %s\n", fname);
+    return 0;
+  }
+  if (lua_pcall(L, 0, 0, 0)){
+    /* PRIMING RUN. FORGET THIS AND YOU'RE TOAST */
+    printf("failed to call %s\n", fname);
+    return 0;
+  }
+  return 1;
+}

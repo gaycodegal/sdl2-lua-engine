@@ -53,23 +53,22 @@ int main( int argc, char* args[] ){
   //screenSurface = SDL_GetWindowSurface( window );
   
   //SDL_FillRect( screenSurface, NULL, SDL_MapRGB( screenSurface->format, 0xFF, 0xFF, 0xFF ) );
-  if(luaL_loadfile(L, "load.lua")){
-    printf("load fuck 2\n");
+  if(!loadLuaFile(L, "load.lua")){
+    end();
     return 1;
   }
-  if (lua_pcall(L, 0, 0, 0)){
-    /* PRIMING RUN. FORGET THIS AND YOU'RE TOAST */
-    printf("0,0,0 fuck 2\n");
-    return 1;
-  }
-  callLuaVoid(L, "loadScene");
+  if(globalTypeExists(L, LUA_TFUNCTION, "Start"))
+    callLuaVoid(L, "Start");
   int t = 50;
+  int updateExists = globalTypeExists(L, LUA_TFUNCTION, "Start");
   while(t--){
     SDL_RenderClear( globalRenderer );
-    callLuaVoid(L, "Update");
+    if(updateExists)
+      callLuaVoid(L, "Update");
     SDL_RenderPresent( globalRenderer );
   }
-  callLuaVoid(L, "endScene");
+  if(globalTypeExists(L, LUA_TFUNCTION, "End"))
+    callLuaVoid(L, "End");
   lua_close(L);
   end();
   return 0;

@@ -1,1 +1,1 @@
-reinterpret_cast<MyClass*>(
+LUA_TFUNCTION

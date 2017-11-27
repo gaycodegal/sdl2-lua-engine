@@ -32,7 +32,7 @@ end
 
 makeGlobal(Game)
 limit = 1000
-function loadScene()
+function Start()
    t = Texture.new("turtle.png")
    s = {}
    for i = 1,limit do
@@ -54,7 +54,7 @@ function Update()
    static.wait(1)
 end
 
-function endScene()
+function Destroy()
    for i = 1,limit do
       s[i]:destroy()
    end
