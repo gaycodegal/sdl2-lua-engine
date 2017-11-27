@@ -26,6 +26,16 @@ SDL_Texture* loadTexture( const char *path )
   return newTexture;
 }
 
+void Sprite::move(int x, int y){
+  this->dest.x = x;
+  this->dest.y = y;
+}
+
+void Sprite::size(int w, int h){
+  this->dest.w = w;
+  this->dest.h = h;
+}
+
 void Sprite::init(SDL_Texture *tex, int x, int y, int w, int h){
   texture = tex;
   this->dest.x = x;

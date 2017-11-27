@@ -17,6 +17,8 @@ private:
   SDL_Texture* texture;
 public:
   void init(SDL_Texture *tex, int x, int y, int w, int h);
+  void size(int w, int h);
+  void move(int x, int y);
   void draw();
 };
 

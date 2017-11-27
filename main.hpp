@@ -11,6 +11,7 @@ extern "C" {
 };
 #include <stdio.h>
 #include "sprite.hpp"
+#include "lua_helpers.hpp"
 #include "lua_sprites.hpp"
 
 struct luaClassList {

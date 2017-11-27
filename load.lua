@@ -24,27 +24,41 @@ function Game.DestroyTexture(t)
 end
 ]]
 
-function hi(a, b)
-   print("yehaw",a,b)
-   return getmetatable(a)[b]   
-end
-
-function usertostring(x)
-   return "userdata"
-end
-
-function loadScene()
-   t = Game.Texture.new("turtle.png")
-   s = {}
-   for i = 1,10 do
-      s[i] = Game.Sprite.new(t, i * 20, 100 + i * 10, 128, 128)
-      s[i]:draw()
-      --Game.Draw(s[i])
+function makeGlobal(x)
+   for k,v in pairs(x) do
+      rawset(_G, k, v)
    end
 end
 
+makeGlobal(Game)
+limit = 1000
+function loadScene()
+   t = Texture.new("turtle.png")
+   s = {}
+   for i = 1,limit do
+      s[i] = Sprite.new(t, i * 20, 100 + i * 10, 128, 128)
+      s[i]:draw()
+   end
+end
+
+x = 0
+y = 0
+
+function Update()
+   x = x + 10
+   y = y + 2   
+   for i = 1,limit do
+      s[i]:move(x + i * 20, y + 100 + i * 10)
+      s[i]:draw()
+   end
+   static.wait(1)
+end
+
 function endScene()
-   Game.Texture.destroy(t)
+   for i = 1,limit do
+      s[i]:destroy()
+   end
+   Texture.destroy(t)
 end
 
 --[[loadScene()

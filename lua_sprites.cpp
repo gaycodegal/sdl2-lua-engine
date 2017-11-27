@@ -1,12 +1,5 @@
 #include "lua_sprites.hpp"
 
-static void set_meta(lua_State *L, int ind, const char * name){
-  lua_getglobal(L, "Game");
-  lua_getfield(L, -1, name);
-  lua_setmetatable(L, ind - 2);
-  lua_pop(L, 1);
-}
-
 static int l_free_texture(lua_State *L){
   SDL_Texture *tex;
   if (!lua_islightuserdata(L, -1)){
@@ -19,33 +12,6 @@ static int l_free_texture(lua_State *L){
   return 0;
 }
 
-void printLuaStack(lua_State *L, const char *name){
-  int args = lua_gettop(L);
-  size_t s;
-  printf("top at(%s): %i\n", name, args);
-  for(int i = 0; i < args; ++i){
-    printf("arg %i %s\n", i, luaL_tolstring(L, -args + i, &s));
-    lua_pop(L, 1);
-  }
-}
-
-static int l_meta_indexer(lua_State *L){
-  //printLuaStack(L, "meta_index");
-  lua_getmetatable(L, -2);
-  //table
-  //str
-  //meta
-  lua_replace(L, -3);
-  //meta
-  //str
-  lua_gettable(L, -2);
-  //meta
-  //val
-  lua_replace(L, -2);
-  //val
-  return 1;
-}
-
 static int l_draw_sprite(lua_State *L){
   Sprite *s;
   if (!lua_isuserdata(L, -1)){
@@ -55,6 +21,18 @@ static int l_draw_sprite(lua_State *L){
   s = *(Sprite **)lua_touserdata(L, -1);
   lua_pop(L, 1);
   s->draw();
+  return 0;
+}
+
+static int l_free_sprite(lua_State *L){
+  Sprite *s;
+  if (!lua_isuserdata(L, -1)){
+    lua_pop(L, 1);
+    return 0;
+  }
+  s = *(Sprite **)lua_touserdata(L, -1);
+  lua_pop(L, 1);
+  delete s;
   return 0;
 }
 
@@ -72,34 +50,100 @@ static int l_new_texture(lua_State *L){
   return 1;
 }
 
+static int l_static_wait(lua_State *L){
+  //printLuaStack(L, "static_wait");
+  int t;
+  Sprite *s;
+  if (!lua_isnumber(L, -1)){
+    lua_pop(L, 1);
+    return 0;
+  }
+  t = (int)lua_tonumber(L, -1);
+  lua_pop(L, 1);
+  SDL_Delay(t);
+  return 0;
+}
+
+static int l_move_sprite(lua_State *L){
+  //printLuaStack(L, "move_sprite");
+  int x, y;
+  Sprite *s;
+  if (!lua_isnumber(L, -1)){
+    lua_pop(L, 3);
+    return 0;
+  }
+  y = (int)lua_tonumber(L, -1);
+  lua_pop(L, 1);
+  if (!lua_isnumber(L, -1)){
+    lua_pop(L, 2);
+    return 0;
+  }
+  x = (int)lua_tonumber(L, -1);
+  lua_pop(L, 1);
+  if (!lua_isuserdata(L, -1)){
+    lua_pop(L, 1);
+    return 0;
+  }
+  s = *reinterpret_cast<Sprite **>(lua_touserdata(L, -1));
+  lua_pop(L, 1);
+  s->move(x, y);
+  return 0;
+}
+
+static int l_size_sprite(lua_State *L){
+  //printLuaStack(L, "size_sprite");
+  int w, h;
+  Sprite *s;
+  if (!lua_isnumber(L, -1)){
+    lua_pop(L, 3);
+    return 0;
+  }
+  h = (int)lua_tonumber(L, -1);
+  lua_pop(L, 1);
+  if (!lua_isnumber(L, -1)){
+    lua_pop(L, 2);
+    return 0;
+  }
+  w = (int)lua_tonumber(L, -1);
+  lua_pop(L, 1);
+  if (!lua_isuserdata(L, -1)){
+    lua_pop(L, 1);
+    return 0;
+  }
+  s = *reinterpret_cast<Sprite **>(lua_touserdata(L, -1));
+  lua_pop(L, 1);
+  s->size(w, h);
+  return 1;
+}
+
 static int l_new_sprite(lua_State *L){
   //printLuaStack(L, "new_sprite");
   int x, y, w, h;
   SDL_Texture *tex;
   Sprite *s;
   if (!lua_isnumber(L, -1)){
-    lua_pop(L, 2);
+    lua_pop(L, 5);
     lua_pushnil(L);
     return 1;
   }
   h = (int)lua_tonumber(L, -1);
   lua_pop(L, 1);
   if (!lua_isnumber(L, -1)){
-    lua_pop(L, 3);
+    lua_pop(L, 4);
     lua_pushnil(L);
     return 1;
   }
   w = (int)lua_tonumber(L, -1);
   lua_pop(L, 1);
   if (!lua_isnumber(L, -1)){
-    lua_pop(L, 4);
+    lua_pop(L, 3);
     lua_pushnil(L);
     return 1;
   }
   y = (int)lua_tonumber(L, -1);
   lua_pop(L, 1);
   if (!lua_isnumber(L, -1)){
-    lua_pop(L, 5);
+    lua_pop(L, 2);
     lua_pushnil(L);
     return 1;
   }
@@ -127,6 +171,9 @@ static int l_new_sprite(lua_State *L){
 static const struct luaL_Reg spritemeta [] = {
   {"new", l_new_sprite},
   {"draw", l_draw_sprite},
+  {"destroy", l_free_sprite},
+  {"move", l_move_sprite},
+  {"size", l_size_sprite},
   {"__index", l_meta_indexer},
   {NULL, NULL}
 };
@@ -137,9 +184,15 @@ static const struct luaL_Reg texturemeta [] = {
   {NULL, NULL}
 };
 
+static const struct luaL_Reg staticmeta [] = {
+  {"wait", l_static_wait},
+  {NULL, NULL}
+};
+
 static const struct luaClassList game [] = {
   {"Texture", texturemeta},
   {"Sprite", spritemeta},
+  {"static", staticmeta},
   {NULL, NULL}
 };
 
