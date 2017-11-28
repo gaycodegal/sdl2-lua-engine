@@ -31,12 +31,12 @@ function makeGlobal(x)
 end
 
 makeGlobal(Game)
-limit = 1000
+limit = 10
 function Start()
    t = Texture.new("turtle.png")
    s = {}
    for i = 1,limit do
-      s[i] = Sprite.new(t, i * 20, 100 + i * 10, 128, 128)
+      s[i] = Sprite.new(t, i * 20, i * 50, 128, 128)
       s[i]:draw()
    end
 end
@@ -48,10 +48,10 @@ function Update()
    x = x + 10
    y = y + 2   
    for i = 1,limit do
-      s[i]:move(x + i * 20, y + 100 + i * 10)
+      s[i]:move(x + i * 20, y + i * 80)
       s[i]:draw()
    end
-   static.wait(1)
+   static.wait(100)
 end
 
 function Destroy()
