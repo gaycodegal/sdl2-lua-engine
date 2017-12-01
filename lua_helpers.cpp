@@ -50,12 +50,12 @@ int globalTypeExists(lua_State *L, int type, const char *name){
 
 int loadLuaFile(lua_State *L, const char *fname){
   if(luaL_loadfile(L, fname)){
-    printf("failed to load %s\n", fname);
+    printf("failed to load %s with error:%s\n", fname, lua_tostring(L, -1));
     return 0;
   }
   if (lua_pcall(L, 0, 0, 0)){
     /* PRIMING RUN. FORGET THIS AND YOU'RE TOAST */
-    printf("failed to call %s\n", fname);
+    printf("failed to call %s with error:%s\n", fname, lua_tostring(L, -1));
     return 0;
   }
   return 1;

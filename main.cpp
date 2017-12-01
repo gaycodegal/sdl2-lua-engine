@@ -40,12 +40,12 @@ int end(){
 
 int main( int argc, char* args[] ){
   lua_State *L;
-  #ifdef SDL_ACTIVE
+#ifdef SDL_ACTIVE
   if(start() != 0){
     end();
     return 1;
   }
-  #endif
+#endif
   L = luaL_newstate();
   luaL_openlibs(L);
   luaL_requiref(L, LUA_LIBNAME, luaopen_sprites, 1);
@@ -59,13 +59,25 @@ int main( int argc, char* args[] ){
   }
   if(globalTypeExists(L, LUA_TFUNCTION, "Start"))
     callLuaVoid(L, "Start");
-  int t = 50;
-  int updateExists = globalTypeExists(L, LUA_TFUNCTION, "Start");
-  while(t--){
-    SDL_RenderClear( globalRenderer );
-    if(updateExists)
-      callLuaVoid(L, "Update");
-    SDL_RenderPresent( globalRenderer );
+  int updateExists = globalTypeExists(L, LUA_TFUNCTION, "Update");
+  SDL_Event e;
+  bool quit = false;
+  //While application is running
+  if(updateExists){
+    while( !quit ) {
+      //Handle events on queue
+      while( SDL_PollEvent( &e ) != 0 )	{
+	//User requests quit
+	if( e.type == SDL_QUIT ){
+	  quit = true;
+	}
+      }
+    
+      SDL_RenderClear( globalRenderer );
+      if(updateExists)
+	callLuaVoid(L, "Update");
+      SDL_RenderPresent( globalRenderer );
+    }
   }
   if(globalTypeExists(L, LUA_TFUNCTION, "End"))
     callLuaVoid(L, "End");

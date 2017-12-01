@@ -1,3 +1,4 @@
+require("tween")
 --[[
 Game = {}
 
@@ -31,28 +32,53 @@ function makeGlobal(x)
 end
 
 makeGlobal(Game)
-limit = 10
+limit = 100
 function Start()
    t = Texture.new("turtle.png")
    s = {}
    for i = 1,limit do
-      s[i] = Sprite.new(t, i * 20, i * 50, 128, 128)
-      s[i]:draw()
+      local spr = Sprite.new(t, 0, 0, 128, 128)
+      local obj = {s=spr, x=(i * 5), y=(i * 50)%300}
+      obj.as = {
+	 Animation.new({
+	       Tween.new(100, (100*i/limit + 10), "x", obj),
+	       Tween.new(-100, (100*i/limit + 10), "x", obj)
+	 }),
+	 Animation.new({
+	       Tween.new(100, 100, "y", obj),
+	       Tween.new(-100, 100, "y", obj)
+	    })
+      }
+      obj.s:draw()
+      s[i] = obj
    end
 end
 
 x = 0
 y = 0
-
+dx = 10
+dy = 2
+times = 50
 function Update()
-   x = x + 10
-   y = y + 2   
-   for i = 1,limit do
-      s[i]:move(x + i * 20, y + i * 80)
-      s[i]:draw()
+   --[[x = x + dx
+   y = y + dy
+   times = times - 1
+   if times == 0 then
+      dx = -dx
+      dy = -dy
+      times = 50
+      end]]
+   for i, spr in ipairs(s) do
+      for k, v in ipairs(spr.as) do
+	 v:step(5)
+      end
+      spr.s:move(spr.x,spr.y)
+      spr.s:draw()
    end
-   static.wait(100)
+   static.wait(math.floor(1000/60))
 end
+
+--Update = nil
 
 function Destroy()
    for i = 1,limit do
