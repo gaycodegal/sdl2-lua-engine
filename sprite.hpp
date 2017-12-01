@@ -3,6 +3,9 @@
 #include "main.hpp"
 SDL_Texture* loadTexture( const char *path );
 
+/**
+   anything that can draw itself to the current sdl2 context
+ */
 class Drawable{
 public:
   Drawable(){}
@@ -10,6 +13,9 @@ public:
   virtual void draw()=0;
 };
 
+/**
+   The a sprite that contains all info necessary to draw itself
+ */
 class Sprite: public Drawable{
 private:
   SDL_Rect dest;

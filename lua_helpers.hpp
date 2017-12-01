@@ -1,10 +1,19 @@
 #ifndef _LUA_HELPERS_HPP_
 #define _LUA_HELPERS_HPP_
 #include "main.hpp"
+/**
+   the library name as exposed to lua.
+ */
 #define LUA_LIBNAME "Game"
 
+/**
+   loads a lua file named <fname> into the state <L>
+ */
 int loadLuaFile(lua_State *L, const char *fname);
 
+/**
+   checks whether a global variable <name> exists of type <type>
+ */
 int globalTypeExists(lua_State *L, int type, const char *name);
 
 /**
