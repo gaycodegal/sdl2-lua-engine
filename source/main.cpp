@@ -40,6 +40,7 @@ int end(){
 
 int main( int argc, char* args[] ){
   lua_State *L;
+  chdir("resources");
 #ifdef SDL_ACTIVE
   if(start() != 0){
     end();

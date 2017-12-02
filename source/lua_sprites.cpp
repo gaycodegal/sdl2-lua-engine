@@ -123,7 +123,7 @@ static int l_new_sprite(lua_State *L){
   Sprite *s;
   if (!lua_isnumber(L, -1)){
     lua_pop(L, 5);
-    printf("abort\n");
+    //printf("abort\n");
     lua_pushnil(L);
     return 1;
   }
@@ -131,7 +131,7 @@ static int l_new_sprite(lua_State *L){
   lua_pop(L, 1);
   if (!lua_isnumber(L, -1)){
     lua_pop(L, 4);
-    printf("abort\n");
+    //printf("abort\n");
     lua_pushnil(L);
     return 1;
   }
@@ -139,7 +139,7 @@ static int l_new_sprite(lua_State *L){
   lua_pop(L, 1);
   if (!lua_isnumber(L, -1)){
     lua_pop(L, 3);
-    printf("abort\n");
+    //printf("abort\n");
     lua_pushnil(L);
     return 1;
   }
@@ -147,7 +147,7 @@ static int l_new_sprite(lua_State *L){
   lua_pop(L, 1);
   if (!lua_isnumber(L, -1)){
     lua_pop(L, 2);
-    printf("abort\n");
+    //printf("abort\n");
     lua_pushnil(L);
     return 1;
   }
@@ -155,11 +155,11 @@ static int l_new_sprite(lua_State *L){
   lua_pop(L, 1);
   if (!lua_islightuserdata(L, -1)){
     lua_pop(L, 1);
-    printf("abort\n");
+    //printf("abort\n");
     lua_pushnil(L);
     return 1;
   }
-  printf("x %i, y %i, w %i, h %i\n", x,y,w,h);
+  //printf("x %i, y %i, w %i, h %i\n", x,y,w,h);
   tex = (SDL_Texture *)lua_touserdata(L, -1);
   lua_pop(L, 1);
   s = new Sprite();

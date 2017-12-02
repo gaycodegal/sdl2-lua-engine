@@ -5,6 +5,7 @@
 #include<SDL2/SDL_ttf.h>
 #include<SDL2/SDL_mixer.h>
 //needs extern because of linking
+#include <unistd.h>
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
