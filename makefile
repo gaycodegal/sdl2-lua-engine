@@ -1,6 +1,6 @@
 INC=./headers
 SRC=./source
-LUA=/media/removable/UNTITLED/lua-5.3.4/src
+LUA=$(HOME)/lua/src
 OBJS = $(patsubst %.cpp,%.o,$(wildcard $(SRC)/*.cpp))
 CC = g++
 CPPFLAGS = -L$(LUA) -I$(LUA) -I$(INC)
